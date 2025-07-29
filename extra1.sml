@@ -187,25 +187,185 @@
 (* val w = splitAt(a,b) *)
 
 (*16*)
-(* val a = [0,1,2,3,4,5,10,6,7,9,10] *)
+(* val a = [0,1,2,3,4,5,6,7,8,9,10] *)
+(* val b = [10,9,8,7,6,5,4,3,2,1,0] *)
+(* val c = [5,4,9,10,0,7,6,3,8,2] *)
 (**)
-(* fun isSorted xs =  *)
+(* fun isSort xs =  *)
 (*     case xs of  *)
-(*          [] => false *)
-(*        | _::[] => true *)
-(*        | x::g::xs' => x <= g andalso isSorted (g::xs') *)
+(*          [] => false  *)
+(*        | _ ::[] => true *)
+(*        | x::g::xs' => x <= g andalso isSort(g::xs') *)
 (**)
-(* val w = isSorted a *)
+(* val w = isSort a *)
 
-(*17*)
-val a = [0,1,2,3,4,5,1,7,8,9,10]
-val b = [10,9,8,7,6,5,4,3,2,1,0]
-val c = [5,3,10,0,2,7,6,8,1,4,9]
+(* val a = [0,1,2,3,4,5,6,7,8,9,10] *)
+(* val b = [10,9,8,7,6,5,4,3,2,1,0] *)
+(* val c = [5,4,9,10,0,7,6,3,8,2] *)
+(**)
+(* fun isAnySorted xs =  *)
+(*     let  *)
+(*         fun increasing ys =  *)
+(*             case ys of  *)
+(*                  [] => false *)
+(*                | _::[] => true *)
+(*                | y::e::ys' => y <= e andalso increasing (e::ys') *)
+(**)
+(*         fun decreasing zs =  *)
+(*             case zs of  *)
+(*                  [] => false  *)
+(*                | _::[] => true  *)
+(*                | z::h::zs' => z >= h andalso decreasing (h::zs') *)
+(*     in  *)
+(*         increasing xs orelse decreasing xs  *)
+(*     end *)
+(**)
+(* val w = isAnySorted c *)
 
-fun isAnySorted xs =
-    case xs of
-         [] => false
-       | _ :: [] => true
-       | x::g::xs' => x <= g andalso isAnySorted(g::xs')
+(*18*)
+(* val a = [0,1,2,3,4] *)
+(* val b = [5,6,7,8,9] *)
+(**)
+(* fun sortedMerg (xs ,ys) =   *)
+(*     if isSort xs andalso isSort ys  *)
+(*     then xs @ ys  *)
+(*     else [] *)
+(**)
+(* val w = sortedMerg(a,b) *)
 
-val w = isAnySorted a
+(*19*)
+(* val a = [42, 7, 19, 85, 3, 64, 28, 11, 50, 36] *)
+(* [3,7,19,28,11,36] [85,64,50] *)
+(* [3,7,11,19,36] [50,64,85] *)
+(* [3,7,11,19,36,50,64,85] *)
+(* [3,7,11,19,36,42,50,64,85]*)(* you need to put 42 back in *)
+(*make a function that sorts an int list*)
+(*make a function that take a sorted list and a number , and puts that number in
+    * it's place*)
+
+(* fun put (n , lst) =  *)
+(*     case lst of  *)
+(*          [] => n :: lst  *)
+(*        | x::xs' => if x > n  *)
+(*                    then put (n,xs')  *)
+(*                    else n :: xs' *)
+
+(* fun qsort xs =  *)
+(*     let  *)
+(*         fun splitAt (xs , n) =  *)
+(*             let  *)
+(*                 fun check i =  *)
+(*                      i > n  *)
+(*                 fun pos zs =  *)
+(*                     case zs of  *)
+(*                          [] => []  *)
+(*                        | z::zs' => if check z  *)
+(*                                    then z :: pos zs' *)
+(*                                    else pos zs' *)
+(*                 fun neg ms =  *)
+(*                     case ms of  *)
+(*                          [] => []  *)
+(*                        | m::ms' => if  not (check m) andalso m <> n *)
+(*                                    then m :: neg ms' *)
+(*                                    else neg ms' *)
+(*                 fun bear (js , ks ) = *)
+(*                     (js,ks) *)
+(*             in  *)
+(*                 bear (neg xs , pos xs ) *)
+(*             end *)
+(*         fun sortedMerg (xs ,ys) =   *)
+(*             if isSort xs andalso isSort ys  *)
+(*             then xs @ ys  *)
+(*             else [] *)
+(**)
+(*     in  *)
+(*         case xs of  *)
+(*              [] => [] *)
+(*            | x::xs' => splitAt (xs, x) *)
+(*     end  *)
+
+
+(*20*)
+(* val a = [0,1,2,3,4,5,6,7,8,9,10] *)
+(* (*[0,2,4,6,8,10]*) *)
+(* (*[1,3,5,7,9]*) *)
+(**)
+(* fun divide xs =  *)
+(*     let *)
+(*         fun lst1 l1 =  *)
+(*             case l1 of  *)
+(*                  [] => []  *)
+(*                | lg1:: [] => lg1::[] *)
+(*                | l::_::lgs => l :: lst1 lgs *)
+(*         fun lst2 l2 =  *)
+(*             case l2 of  *)
+(*                  [] => []  *)
+(*                | _::[] => [] *)
+(*                | _::lh::lhs => lh :: lst2 lhs *)
+(*     in *)
+(*            (lst1 xs , lst2 xs) *)
+(*     end *)
+(**)
+(* val w = divide a *)
+
+(* fun mergeSort xs = *)
+(*     let val len = length xs *)
+(*         fun insertSort [] = [] *)
+(*           | insertSort [x] = [x] *)
+(*           | insertSort (x::xs) = *)
+(*               let fun insert (x, []) = [x] *)
+(*                     | insert (x, y::ys) = *)
+(*                         if x <= y then x :: y :: ys *)
+(*                         else y :: insert (x, ys) *)
+(*               in insert (x, insertSort xs) *)
+(*               end *)
+(*         fun merge (xs, []) = xs *)
+(*           | merge ([], ys) = ys *)
+(*           | merge (x::xs, y::ys) = *)
+(*               if x <= y then x :: merge (xs, y::ys) *)
+(*               else y :: merge (x::xs, ys) *)
+(*     in if len <= 20 then insertSort xs  (* threshold for small lists *) *)
+(*        else *)
+(*            let val half = len div 2 *)
+(*                val left = List.take(xs, half) *)
+(*                val right = List.drop(xs, half) *)
+(*            in merge (mergeSort left, mergeSort right) *)
+(*            end *)
+(*     end *)
+(*21*)
+val a = [42, 7, 19, 85, 3, 64, 28, 11, 50, 36]
+
+fun not_so_quick_sort xs = 
+    let 
+        fun divide ys = 
+            let
+                fun lst1 l1 = 
+                    case l1 of 
+                         [] => [] 
+                       | lg1:: [] => lg1::[]
+                       | l::_::lgs => l :: lst1 lgs
+                fun lst2 l2 = 
+                    case l2 of 
+                         [] => [] 
+                       | _::[] => []
+                       | _::lh::lhs => lh :: lst2 lhs
+            in
+                   (lst1 ys , lst2 ys)
+            end
+        fun isSort zs = 
+            case zs of 
+                 [] => false 
+               | _ ::[] => true
+               | z::g::zs' => z <= g andalso isSort(g::zs')
+        fun sortedMerg (ws ,vs) =  
+            if isSort ws andalso isSort vs 
+            then ws @ vs 
+            else []
+    in 
+        case divide xs of 
+             ([],[]) => 
+           | (c1,c2) => if isSort c1 
+    end 
+
+val w = not_so_quick_sort a
+
