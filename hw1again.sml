@@ -27,21 +27,31 @@ fun number_in_month (xs,n) =
 (*3*)
 
 fun number_in_months (xs,ns ) = 
-    case ns of 
-         [] => 0 
-       | n::ns' => number_in_month(xs,n) + number_in_months(xs,ns')
+    let 
+        fun aux (lst, acc) = 
+            case lst of 
+                 [] => acc 
+               | l::ls => aux (ls , number_in_month(xs,l) + acc)
+    in 
+        aux (ns,0)
+    end
 
 (* val test3 = number_in_months ([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[2,3,4]) = 3 *)
 
 (*4*)
 
 fun dates_in_month (ds,n) = 
-    case ds of 
-         [] => [] 
-       | (r,s,t)::ds' => 
-               if s = n 
-               then (r,s,t) :: dates_in_month(ds',n)
-               else dates_in_month(ds',n)
+    let 
+        fun aux (lst, acc) = 
+            case lst of 
+                 [] => acc 
+               | (r,s,t)::ls => 
+                       if s = n 
+                       then aux (ls , (r,s,t) :: acc)
+                       else aux (ls, acc)
+    in 
+        aux (ds , [])
+    end 
 
 (* val test4 = dates_in_month ([(2012,2,28),(2013,12,1)],2) = [(2012,2,28)] *)
 
