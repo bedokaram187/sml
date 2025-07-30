@@ -33,6 +33,7 @@ fun all_except_option (s , sl ) =
         some_or_none (s,sl)
     end 
 
+val test1 = all_except_option ("string", ["string"]) = SOME []
 (* val z = all_except_option(name,family) *)
 
 (*b*) (*pass*)
@@ -49,7 +50,8 @@ fun get_substitutions1 ( sll,s ) =
                case all_except_option(s,x) of 
                NONE => get_substitutions1 (xs', s)
               | SOME i  => i @ get_substitutions1 ( xs',s) 
-(**)
+
+val test2 = get_substitutions1 ([["foo"],["there"]], "foo") = []
 (* val b = get_substitutions1 (family,name) *)
 (**)
 (*c*) (*pass*)
@@ -68,6 +70,8 @@ fun get_substitutions2 ( sll,s) =
     in 
         aux (sll , [])
     end
+
+val test3 = get_substitutions2 ([["foo"],["there"]], "foo") = []
 (* val s =get_substitutions2 (family,name) *)
 
 (*d*) (*pass*)
@@ -88,6 +92,9 @@ fun similar_names (sll,name) =
         name :: hel3(hel1 name)
     end 
 
+val test4 = similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="W", last="Smith"}) =
+	    [{first="Fred", last="Smith", middle="W"}, {first="Fredrick", last="Smith", middle="W"},
+	     {first="Freddie", last="Smith", middle="W"}, {first="F", last="Smith", middle="W"}]
 (* val w = similar_names(family ,name) *)
 
 (* you may assume that Num is always used with values 2, 3, ..., 10
@@ -124,6 +131,7 @@ fun card_color c =
        | (Diamonds,_) => Red
        | (Hearts,_) => Red
 
+val test5 = card_color (Clubs, Num 2) = Black
 (* val w = card_color card1 *)
 
 (*b*) (*pass*)
@@ -135,6 +143,7 @@ fun card_value kard =
        | (_,Ace) => 11
        | (_,_) => 10
 
+val test6 = card_value (Clubs, Num 2) = 2
 (* val w = card_value card2 *)
 
 (*c*)(*pass*)
@@ -177,7 +186,8 @@ fun remove_card (cs ,c, e) =
         then remove_first(c ,cs )
         else raise e
     end
-(**)
+
+val test7 = remove_card ([(Hearts, Ace)], (Hearts, Ace), IllegalMove) = []
 (* val w = remove_card(my_cards,card1,IllegalMove) *)
 
 (*d*)
@@ -186,15 +196,16 @@ fun remove_card (cs ,c, e) =
 (* val card3 = (Diamonds, Ace) *)
 (* val card4 = (Hearts,Queen ) *)
 (**)
-(* val my_cards = [card1,card2] *)
-(* val his_cards = [] *)
-(* (**) *)
+(* val my_cards = [card1,card2,card3] *)
+(* (* val his_cards = [] *) *)
+(* (* (**) *) *)
 fun all_same_color cards  = 
     case cards of 
-         [] => true (*false*)
+         [] => true 
        | _::[] => true
        | x::(y::xs') => card_color x = card_color y andalso all_same_color ( y ::xs' )
-(**)
+
+val test8 = all_same_color [(Hearts, Ace), (Hearts, Ace)] = true
 (* val w = all_same_color my_cards *)
 
 (*e*)(*pass*)
@@ -218,9 +229,12 @@ fun sum_cards cards =
                  [] => acc 
                | x::xs => aux (xs , card_value x + acc)
     in 
-        aux (cards , 0) 
+        case cards of  (*is this needed??*)
+             [] => 0
+           | _ => aux (cards , 0) 
     end 
-(**)
+
+val test9 = sum_cards [(Clubs, Num 2),(Clubs, Num 2)] = 4
 (* val z = sum_cards my_cards *)
 
 (* score: Your function returns an incorrect result when the sum is greater than the goal, and the hand contains cards of oly one color. [incorrect answer] *)
@@ -236,33 +250,33 @@ fun sum_cards cards =
 (*then score = preliminary score / 2 *)
 (*else score = preliminary score*)
 
-(* val card1 = (Clubs, Num 2) *)
-(* val card2 = (Spades, Jack) *)
-(* val card3 = (Diamonds, Ace) *)
-(* val card4 = (Hearts,Queen ) *)
+(* val card1 = (Spades, Num 2)(*2*) *)
+(* val card2 = (Spades, Num 2)(*2*) *)
+(* val card3 = (Spades, Num 2)(*2*) *)
+(* val card4 = (Hearts, Num 2)(*2*) *)
 (**)
-(* val my_cards = [card1,card2,card3,card4] *)
-(* val my_goal = 50 *)
+(* val my_cards = [card1,card2,card3,card4] (*4*) *)
+(* val my_goal = 20 *)
 
 fun score (held_cards, goal) =  
     let 
-        fun card_value kard = 
+        fun card_value (_,kard) = 
             case kard of 
-                 (_,Num i) => i 
-               | (_,Ace) => 11
-               | (_,_) => 10
+                 Num i => i 
+               | Ace => 11
+               |  _ => 10
 
-        fun card_color c = 
+        fun card_color (c,_) = 
             case c of 
-                 (Spades,_) => Black
-               | (Clubs,_) => Black
-               | (Diamonds,_) => Red
-               | (Hearts,_) => Red
+                 Spades => Black
+               | Clubs => Black
+               | Diamonds => Red
+               | Hearts => Red
 
         fun all_same_color cards  = 
             case cards of 
-                 [] => false (*false*)
-               | _::[] => true
+                 [] => true (*confirmed*)
+               | _::[] => true (*confirmed*)
                | x::(y::xs') => card_color x = card_color y andalso all_same_color ( y ::xs' )
 
         fun sum cardz = 
@@ -270,7 +284,7 @@ fun score (held_cards, goal) =
                 fun aux (lst , acc ) = 
                     case lst of 
                          [] => acc  (*goal ??*)
-                       | start::finish => aux (finish , card_value start + acc)
+                       | start::finish => aux (finish , acc + (card_value start) )
             in 
                 aux (cardz , 0) 
             end 
@@ -284,14 +298,51 @@ fun score (held_cards, goal) =
         if held_cards = [] 
         then goal
         else 
-            if all_same_color held_cards 
+            if all_same_color held_cards
             then pscore(sum held_cards, goal ) div 2 
             else pscore (sum held_cards, goal )
     end 
 
-(* val w = score(my_cards,my_goal) *)
+(*  when the sum is greater than the goal, and the hand contains cards of oly one color. [incorrect answer] *)
+val test10 = score ([(Clubs, Num 8),(Clubs, Num 4)],10) = 3 (*gives true*)
+(*  when the sum is not greater than the goal, and the hand contains cards hand of both colors. [incorrect answer] *)
+val test11 = score ([(Hearts, Num 2),(Clubs, Num 4)],10) = 4 (*gives true*)
+(* score: Your function returns an incorrect result when the input hand is the empty list. [incorrect answer] *)
+val test12 = score ([],10) = 10 (*gives true, but should it return the goal ??*)
+(* score: Your function returns an incorrect result when you must round the score correctly. [incorrect answer] *)
+(*what exactly do you want ??*)
 
 (*g*)
+(* fun officiate (cards,plays,goal) = *)
+(*     let  *)
+(*         fun loop (current_cards,cards_left,plays_left) = *)
+(*             case plays_left of *)
+(*                 [] => score(current_cards,goal) *)
+(*               | (Discard c)::tail =>  *)
+(*                 loop (remove_card(current_cards,c,IllegalMove),cards_left,tail) *)
+(*               | Draw::tail => *)
+(*                 (* note: must score immediately if go over goal! *) *)
+(*                 case cards_left of *)
+(*                     [] => score(current_cards,goal) *)
+(*                   | c::rest => if sum_cards (c::current_cards) > goal *)
+(*                                then score(c::current_cards,goal) *)
+(*                                else loop (c::current_cards,rest,tail) *)
+(*     in  *)
+(*         loop ([],cards,plays) *)
+(*     end *)
+(**)
+(* val test11 = officiate ([(Hearts, Num 2),(Clubs, Num 4)],[Draw], 15) = 6 *)
+(**)
+(* val test12 = officiate ([(Clubs,Ace),(Spades,Ace),(Clubs,Ace),(Spades,Ace)], *)
+(*                         [Draw,Draw,Draw,Draw,Draw], *)
+(*                         42) *)
+(*              = 3 *)
+(**)
+(* val test13 = ((officiate([(Clubs,Jack),(Spades,Num(8))], *)
+(*                          [Draw,Discard(Hearts,Jack)], *)
+(*                          42); *)
+(*                false)  *)
+(*               handle IllegalMove => true) *)
 (*rules*)
 (*drawing -> removing the first card in the card list and putting it in the
 * held cards*)

@@ -333,39 +333,45 @@
 (*            end *)
 (*     end *)
 (*21*)
-val a = [42, 7, 19, 85, 3, 64, 28, 11, 50, 36]
+(* val a = [42, 7, 19, 85, 3, 64, 28, 11, 50, 36] *)
+(**)
+(* fun not_so_quick_sort xs =  *)
+(*     let  *)
+(*         fun divide ys =  *)
+(*             let *)
+(*                 fun lst1 l1 =  *)
+(*                     case l1 of  *)
+(*                          [] => []  *)
+(*                        | lg1:: [] => lg1::[] *)
+(*                        | l::_::lgs => l :: lst1 lgs *)
+(*                 fun lst2 l2 =  *)
+(*                     case l2 of  *)
+(*                          [] => []  *)
+(*                        | _::[] => [] *)
+(*                        | _::lh::lhs => lh :: lst2 lhs *)
+(*             in *)
+(*                    (lst1 ys , lst2 ys) *)
+(*             end *)
+(*         fun isSort zs =  *)
+(*             case zs of  *)
+(*                  [] => false  *)
+(*                | _ ::[] => true *)
+(*                | z::g::zs' => z <= g andalso isSort(g::zs') *)
+(*         fun sortedMerg (ws ,vs) =   *)
+(*             if isSort ws andalso isSort vs  *)
+(*             then ws @ vs  *)
+(*             else [] *)
+(*     in  *)
+(*         case divide xs of  *)
+(*              ([],[]) =>  *)
+(*            | (c1,c2) => if isSort c1  *)
+(*     end  *)
+(**)
+(* val w = not_so_quick_sort a *)
 
-fun not_so_quick_sort xs = 
-    let 
-        fun divide ys = 
-            let
-                fun lst1 l1 = 
-                    case l1 of 
-                         [] => [] 
-                       | lg1:: [] => lg1::[]
-                       | l::_::lgs => l :: lst1 lgs
-                fun lst2 l2 = 
-                    case l2 of 
-                         [] => [] 
-                       | _::[] => []
-                       | _::lh::lhs => lh :: lst2 lhs
-            in
-                   (lst1 ys , lst2 ys)
-            end
-        fun isSort zs = 
-            case zs of 
-                 [] => false 
-               | _ ::[] => true
-               | z::g::zs' => z <= g andalso isSort(g::zs')
-        fun sortedMerg (ws ,vs) =  
-            if isSort ws andalso isSort vs 
-            then ws @ vs 
-            else []
-    in 
-        case divide xs of 
-             ([],[]) => 
-           | (c1,c2) => if isSort c1 
-    end 
+(*22*)
+val a = 5
+val b = 9
 
-val w = not_so_quick_sort a
+fun fullDivide (x,y) = 
 
