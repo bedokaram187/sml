@@ -1,14 +1,5 @@
 fun same_string(s1 : string, s2 : string) =
     s1 = s2
-(* all_same_color: Your function returns an incorrect result when all of the cards in the list have the same color. [incorrect answer] *)
-(* all_same_color: Your function returns an incorrect result when the input list is empty. [incorrect answer] *)
-(* score: Your function returns an incorrect result when the sum is greater than the goal, and the hand contains cards of oly one color. [incorrect answer] *)
-(* score: Your function returns an incorrect result when the sum is not greater than the goal, and the hand contains cards hand of both colors. [incorrect answer] *)
-(* score: Your function returns an incorrect result when you must round the score correctly. [incorrect answer] *)
-(* score: Your function returns an incorrect result when the input hand is the empty list. [incorrect answer] *)
-(* 2g tests failed to run (most likely caused by an incorrect function signature or unimplemented function in the submission) *)
-(* 3a tests failed to run (most likely caused by an incorrect function signature or unimplemented function in the submission) *)
-(* 3b tests failed to run (most likely caused by an incorrect function signature or unimplemented function in the submission) *)
 
 (*a*) (*pass*)
 (* val name = "bedo" *)
@@ -198,11 +189,11 @@ fun remove_card (cs ,c, e) =
 (* val my_cards = [card1,card2] *)
 (* val his_cards = [] *)
 (* (**) *)
-(* fun all_same_color cards  =  *)
-(*     case cards of  *)
-(*          [] => true (*false*) *)
-(*        | _::[] => true *)
-(*        | x::(y::xs') => card_color x = card_color y andalso all_same_color ( y ::xs' ) *)
+fun all_same_color cards  = 
+    case cards of 
+         [] => true (*false*)
+       | _::[] => true
+       | x::(y::xs') => card_color x = card_color y andalso all_same_color ( y ::xs' )
 (**)
 (* val w = all_same_color my_cards *)
 
@@ -245,13 +236,13 @@ fun sum_cards cards =
 (*then score = preliminary score / 2 *)
 (*else score = preliminary score*)
 
-val card1 = (Clubs, Num 2)
-val card2 = (Spades, Jack)
-val card3 = (Diamonds, Ace)
-val card4 = (Hearts,Queen )
-
-val my_cards = [card1,card2,card3,card4]
-val my_goal = 50
+(* val card1 = (Clubs, Num 2) *)
+(* val card2 = (Spades, Jack) *)
+(* val card3 = (Diamonds, Ace) *)
+(* val card4 = (Hearts,Queen ) *)
+(**)
+(* val my_cards = [card1,card2,card3,card4] *)
+(* val my_goal = 50 *)
 
 fun score (held_cards, goal) =  
     let 
@@ -270,7 +261,7 @@ fun score (held_cards, goal) =
 
         fun all_same_color cards  = 
             case cards of 
-                 [] => true (*false*)
+                 [] => false (*false*)
                | _::[] => true
                | x::(y::xs') => card_color x = card_color y andalso all_same_color ( y ::xs' )
 
@@ -278,7 +269,7 @@ fun score (held_cards, goal) =
             let 
                 fun aux (lst , acc ) = 
                     case lst of 
-                         [] => acc 
+                         [] => acc  (*goal ??*)
                        | start::finish => aux (finish , card_value start + acc)
             in 
                 aux (cardz , 0) 
@@ -290,13 +281,15 @@ fun score (held_cards, goal) =
             else gol - som
 
     in 
-        if all_same_color held_cards 
-        (* then Int.round (Real.fromInt(pscore(sum held_cards, goal)) / 2.0) *)
-        then pscore(sum held_cards, goal ) div 2 
-        else pscore (sum held_cards, goal )
+        if held_cards = [] 
+        then goal
+        else 
+            if all_same_color held_cards 
+            then pscore(sum held_cards, goal ) div 2 
+            else pscore (sum held_cards, goal )
     end 
 
-val w = score(my_cards,my_goal)
+(* val w = score(my_cards,my_goal) *)
 
 (*g*)
 (*rules*)
