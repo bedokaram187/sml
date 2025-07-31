@@ -155,3 +155,150 @@ fun gardener tr =
 
 (*8*)
 
+
+datatype nat = ZERO 
+             | SUCC of nat
+
+exception Negative
+
+(*9*)             
+(* val a = ZERO *)
+(* val b = SUCC a *)
+
+fun is_positive ZERO = false
+  | is_positive _ = true
+     
+(* val w = is_positive b *)
+
+(*10*)
+(* val a = ZERO *)
+(* val b = SUCC a *)
+(* val c = SUCC b *)
+
+fun pred ZERO = raise Negative
+  | pred (SUCC i) = i
+
+(* val w = pred a *)
+(* val w = pred c *)
+
+(*11*)
+(* val a = 1 *)
+(* val b = 2 *)
+
+fun int_to_nat n = 
+    let 
+        fun aux (u , acc) = 
+            if u = 0 
+            then acc
+            else aux (u -1 , SUCC acc)
+    in 
+        if n < 0 
+        then raise Negative
+        else aux (n, ZERO)
+    end
+
+(* val w = int_to_nat a *)
+(* val m = int_to_nat b *)
+
+(*12*)
+(*
+* 1 -> SUCC ZERO
+* 2 -> SUCC SUCC ZERO
+* 1 + 2 = 3 -> SUCC SUCC ZERO *)
+(* val a = SUCC ZERO *)
+(* val b = SUCC (SUCC ZERO) *)
+
+fun add (n1,n2) = 
+    let
+        fun aux (n, u, acc ) = 
+            if n = u 
+            then acc 
+            else aux (n, SUCC u , 1 + acc )
+
+        fun hel2 (m, l) = 
+            if l = 0 
+            then m 
+            else hel2 (SUCC m , l - 1)
+    in 
+        hel2 (n2 ,aux (n1 , ZERO , 0))
+    end
+
+(* val w = add (a,b) *)
+
+(*13*)
+(* val a = SUCC (SUCC ZERO) *)
+(* val b = SUCC ZERO *)
+
+fun sub (n1, n2) = 
+    let         
+        (*remove one SUCC*)
+        fun pred ZERO = raise Negative
+          | pred (SUCC i) = i
+
+        (*how many SUCC are there ?*)
+        fun aux (n, u, acc ) = 
+            if n = u 
+            then acc 
+            else aux (n, SUCC u , 1 + acc )
+
+        (*remove one SUCC l time from m*)
+        fun hel2 (m, l) = 
+            if l = 0 
+            then m 
+            else hel2 (pred m , l - 1)
+    in 
+        hel2 (n1, aux (n2, ZERO, 0))
+    end
+
+(* val w = sub(a,b) *)
+
+(*14*)
+(* val a = SUCC (SUCC ZERO) *)
+(* val b = SUCC (SUCC ZERO) *)
+
+fun mult (n1,n2) = 
+    let 
+        fun is_positive ZERO = false
+          | is_positive _ = true
+
+        (*how many SUCC are there ?*)
+        fun aux (n, u, acc ) = 
+            if n = u 
+            then acc 
+            else aux (n, SUCC u , 1 + acc )
+
+        (* add m to itself (m+m) for l times*)
+        fun hel3 (m,l) = 
+            if l = 0 
+            then ZERO
+            else  (add(m, hel3 (m, l-1)) )
+    in 
+        if is_positive n1 andalso is_positive n2 
+        then hel3(n1 , aux (n2 , ZERO, 0))
+        else ZERO
+    end
+
+(* val w = mult (a,b) *)
+
+(*15*)
+(* val a = SUCC ZERO *)
+(* val b = SUCC (SUCC ZERO) *)
+
+fun less_than (n1, n2) = 
+    let 
+        (*how many SUCC are there ?*)
+        fun aux (n, u, acc ) = 
+            if n = u 
+            then acc 
+            else aux (n, SUCC u , 1 + acc )
+    in 
+        aux (n1, ZERO, 0) < aux (n2, ZERO, 0)
+    end
+
+(* val w = less_than(a,b) *)
+
+datatype intSet = 
+  Elems of int list (*list of integers, possibly with duplicates to be ignored*)
+| Range of { from : int, to : int }  (* integers from one number to another *)
+| Union of intSet * intSet (* union of the two sets *)
+| Intersection of intSet * intSet (* intersection of the two sets *)
