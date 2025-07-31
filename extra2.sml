@@ -48,3 +48,110 @@ fun number_passed grades =
     end
 
 (* val w = number_passed students_final_grades_list *)
+
+(*4*)
+(* val a = [(pass, {grade=SOME 50, id=1}), (fail,{grade=SOME 90, id=2}), (pass,{grade=SOME 10, id=3})] *)
+
+fun number_misgraded toto = 
+    let
+        fun aux ( [] , acc) = acc 
+          | aux ( (a, b)::ls , acc) = 
+              case (a,has_passed b) of 
+                    (pass , false) => aux (ls , 1 + acc)
+                  | (fail , true ) => aux (ls , 1 + acc)
+                  | (pass , true ) => aux (ls , acc)
+                  | (fail , false) => aux (ls , acc)
+    in 
+        aux (toto,0)
+    end
+
+(* val w = number_misgraded a *)
+
+datatype 'a tree = leaf 
+                 | node of { value : 'a, left : 'a tree, right : 'a tree }
+datatype flag = leave_me_alone | prune_me
+
+
+(*5*)
+val family_tree = 
+    node {
+        value = "khalaf" , 
+        left = node {
+                    value = "hussein",
+                    left = node {
+                                value = "mohammed" , 
+                                left = leaf,
+                                right= leaf
+                    }, 
+                    right = leaf},
+        right = node {
+                    value = "karam" , 
+                    left = leaf, 
+                    right = leaf}}
+
+fun tree_height tr =
+    let
+        fun max (x,y) = 
+            if x > y 
+            then x 
+            else y 
+
+        fun aux ( leaf, acc ) = acc
+          | aux ( node{ left, right, ...}, acc ) =  max (aux (left , 1 + acc) ,aux (right , 1 + acc))
+    in 
+        aux (tr ,0)
+    end
+
+(* val w = tree_height family_tree *)
+
+(*6*)
+val my_tree = 
+    node { 
+        value = 1 ,
+        left = node {
+                value = 2 , 
+                left =  leaf,
+                right = leaf},
+        right= node {
+                value = 3 , 
+                left = leaf,
+                right = leaf}}
+
+fun sum_tree tr = 
+    let 
+        fun aux leaf = 0
+          | aux ( node {value, left, right}) = value +  aux left + aux right
+    in 
+        aux tr 
+    end
+
+(* val w = sum_tree my_tree *)
+
+(*7*)
+val his_tree = 
+    node { 
+        value = leave_me_alone ,
+        left = node {
+                value = leave_me_alone, 
+                left =  leaf,
+                right = leaf},
+        right= node {
+                value = prune_me , 
+                left = leaf,
+                right = leaf}}
+
+fun gardener tr = 
+    let
+        fun aux leaf = leaf
+          | aux ( node {value, left,right} ) = 
+          case value of 
+               prune_me => leaf
+             | leave_me_alone => node {value=leave_me_alone, left = aux left,right =  aux right} 
+    in 
+        aux tr 
+    end
+
+(* val w = gardener his_tree *)
+
+(*8*)
+
