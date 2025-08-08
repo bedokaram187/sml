@@ -67,15 +67,12 @@ val test1 = only_capitals ["A","B","C"] = ["A","B","C"]
 (*2*)
 (* val name = ["1234", "bedo", "abdullah"] *)
 
-fun hel1 (z,y) = 
-    if String.size z > String.size y 
-    then z 
-    else y
-
-fun longest_string1 xs = 
+fun longest_string1_helper f xs = 
     case xs of 
          [] => "" 
-       | _ => foldl hel1 "" xs
+       | _ => foldl f "" xs
+
+val longest_string1 = longest_string1_helper (fn (x,y) => if String.size x > String.size y then x else y )
 
 val test2 = longest_string1 ["A","bc","C"] = "bc"
 (* val longest_string1 = longest_string1 name *)
@@ -83,66 +80,66 @@ val test2 = longest_string1 ["A","bc","C"] = "bc"
 (*3*)
 (* val name = ["1234", "bedo" ] *)
 
-fun hel2 (z,y) = 
-    if String.size z > String.size y 
-    then z 
-    else y
-
-fun longest_string2 xs = 
+fun longest_string2_helper f xs = 
     case xs of 
-         [] => "" 
-       | _::xs' => foldl hel2 "" xs'
+	 [] => "" 
+       | _::xs' => foldl f "" xs'
+
+val longest_string2  = longest_string2_helper (fn (x,y) => if  String.size x < String.size y then y else x)
 
 val test3 = longest_string2 ["A","bc","C"] = "bc"
-(* val w = longest_string2 name  *)
 
 (*4*)
-val names = ["bedo", "ahmed", "karam"]
-
-
-fun lo (z, y) = 
-    if String.size z > String.size y 
-    then z 
-    else y 
-
-fun yo (z, y) = 
-    if String.size z < String.size y 
-    then y
-    else z
 
 fun longest_string_helper f xs = 
-    if f ("123", "12") = "123"
+    if f (2,1)
     then 
-	case xs of 
-	     [] => "" 
-	   | _ => foldl f "" xs
+	longest_string1 xs
     else 
-	case xs of 
-	     [] => "" 
-	   | _::xs' => foldl f "" xs'
+	longest_string2 xs
 
-val longest_string3 = longest_string_helper lo 
+val longest_string3 = longest_string_helper (fn (x,y) => x > y) 
 
-val longest_string4 = longest_string_helper yo 
+val longest_string4 = longest_string_helper (fn (x,y) => x < y)
 
 val test4a = longest_string3 ["A","bc","C"] = "bc"
 
 val test4b = longest_string4 ["A","B","C"] = "C"
 
 (*5*)
-(* val name = ["bedo", "Ahmed", "karam", "Khalaf"] *)
 
 fun longest_capitalized xs = xs |> only_capitals |> longest_string3
 
-(* val w = longest_capitalized name *)
 val test5 = longest_capitalized ["A","bc","C"] = "A"
 
 (*6*)
-val name = "bedo" (* "odeb" *)
 
 fun rev_string x = x |> String.explode |> List.rev |> String.implode
 
-(* val w = rev_string name *)
 val test6 = rev_string "abc" = "cba"
 
+(*7*)
 
+fun first_answer _ [] = raise NoAnswer
+       | first_answer f (x::xs) = 
+       case f x of 
+	    SOME v => v 
+	  | NONE => first_answer f xs
+
+val test7 = first_answer (fn x => if x > 3 then SOME x else NONE) [1,2,3,4,5] = 4
+
+
+(*8*)
+
+fun all_answers f xs = 
+    let 
+	fun aux [] acc = SOME acc
+	  | aux (x::xs') acc = 
+	  case f x of 
+	NONE => NONE 
+      | SOME lst => aux xs' (lst@acc)
+    in 
+	aux xs []
+    end
+
+val test8 = all_answers (fn x => if x = 1 then SOME [x] else NONE) [2,3,4,5,6,7] = NONE
