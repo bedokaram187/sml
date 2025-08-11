@@ -29,11 +29,11 @@ fun x |> f = (f x)
 
 (**** for the challenge problem only ****)
 
-(* datatype typ = Anything *)
-(* 	     | UnitT *)
-(* 	     | IntT *)
-(* 	     | TupleT of typ list *)
-(* 	     | Datatype of string *)
+datatype typ = Anything
+	     | UnitT
+	     | IntT
+	     | TupleT of typ list
+	     | Datatype of string
 
 (**** you can put all your code here ****)
 
@@ -137,12 +137,40 @@ fun all_answers f xs =
 (*a*)
 val count_wildcards = g (fn _ => 1) (fn _ => 0) 
 
-val test9a = count_wildcards Wildcard = 1
+(* val test9a = count_wildcards Wildcard = 1 *)
 
 (*b*)
 val count_wild_and_variable_lengths = g (fn _ => 1)  String.size 
 
-val test9b = count_wild_and_variable_lengths (Variable "a") = 1
+(* val test9b = count_wild_and_variable_lengths (Variable "a") = 1 *)
 
 (*c*)
-val conut_some_va = g (fn _ => 0 ) 
+
+fun count_some_var (name, pat) =
+    g (fn () => 0) (fn s => if s = name then 1 else 0) pat
+
+(* val test9c = count_some_var ("x", Variable "x") = 1 *)
+
+(*10*)
+
+fun check_pat pat = 
+    let
+	fun has_repeats [] = false
+	  | has_repeats (x::xs) =
+		List.exists (fn y => y = x) xs
+		orelse has_repeats xs
+
+	fun vars_in_pattern pat =
+	  case pat of
+	      Wildcard => []
+	    | Variable s => [s]
+	    | UnitP => []
+	    | ConstP _ => []
+	    | TupleP ps => List.foldl (fn (p, acc) => vars_in_pattern p @ acc) [] ps
+	    | ConstructorP (_, p) => vars_in_pattern p
+
+    in 
+    not	(has_repeats (vars_in_pattern pat))
+    end
+
+(* val test10 = check_pat (Variable("x")) = true *)

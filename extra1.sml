@@ -30,20 +30,23 @@
 (*  end*)
 
 
-(* val lst = [1,2,3,4] *)
-(* (*[1,3,6,10]*) *)
-(* fun cumsum xs =  *)
-(*     let  *)
-(*         fun aux (zs , acc, out) =  *)
-(*         case zs of  *)
-(*              [] => out *)
-(*            | e:: [] => e + acc :: out *)
-(*            | x::g::xs' => aux (g :: xs' ,x + g + acc ,  acc ::out ) *)
-(*     in  *)
-(*         hd xs :: aux (xs , 0, []) *)
-(*     end  *)
-(**)
-(* val m = cumsum lst *)
+val lst = [6,2,1]
+(*[1,3,6,10]*)
+
+fun cumsum xs =
+    let
+        fun aux (zs, acc, out) =
+        case zs of
+             [] => out
+           | x::xs' => aux (xs', x + acc, acc::out)
+    in
+        case xs of
+             [] => []
+           | e::[] => [e]
+           | l::_ => aux (xs, l, [l])
+    end 
+
+val m = cumsum lst
 
 (* val w = SOME "bedo"  *)
 (**)
@@ -370,8 +373,8 @@
 (* val w = not_so_quick_sort a *)
 
 (*22*)
-val a = 5
-val b = 9
-
-fun fullDivide (x,y) = 
+(* val a = 5 *)
+(* val b = 9 *)
+(**)
+(* fun fullDivide (x,y) =  *)
 
