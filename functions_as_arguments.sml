@@ -23,12 +23,12 @@ val x4 = triple(1,3)
 (*how many times should i apply function f to x until x reaches zero*)
 fun times_untill_zero (f,x) = 
     let
-        fun aux (f,x,acc) =
+        fun aux (x,acc) =
             if x = 0 
             then acc 
-            else aux (f,f x ,1 + acc)
+            else aux (f x ,1 + acc)
     in 
-        aux (f,x,0)
+        aux (x,0)
     end
 (* The map function takes a list and a function f and produces a new list by applying f to each element of the *)
 (* list. *)
@@ -47,6 +47,11 @@ fun filter (f,xs) =
                if f x 
                then x::(filter(f,xs'))
                else filter(f,xs')
+
+fun fold (f,acc, xs) = 
+    case xs of 
+         [] => acc 
+       | x::xs' => fold (f, f (acc,x) , xs')
 
 fun get_all_even_2nds xs = filter(fn (_,v) => v mod 2 = 0 , xs) (*[(1,2),(3,4),(5,6)]  *)
 
