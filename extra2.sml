@@ -285,8 +285,7 @@ fun mult (n1,n2) =
 (* val b = SUCC (SUCC ZERO) *)
 
 fun less_than (n1, n2) = 
-    let 
-        (*how many SUCC are there ?*)
+    let (*how many SUCC are there ?*)
         fun aux (n, u, acc ) = 
             if n = u 
             then acc 
